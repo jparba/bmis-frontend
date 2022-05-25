@@ -4,7 +4,7 @@
       color="deep-purple accent-4"
       dark
     >
-      <v-toolbar-title>Barangay San Theodoro</v-toolbar-title>
+      <v-toolbar-title>Barangay San Teodoro</v-toolbar-title>
       <v-spacer></v-spacer>
       <nuxt-link to="/" class="white--text">Back to Homepage</nuxt-link>
 

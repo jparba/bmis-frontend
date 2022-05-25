@@ -15,7 +15,7 @@
                   <v-col
                     align-self="start"
                     cols="12"
-                    md="3"
+                    md="4"
                   >
                     <v-avatar
                       class="profile"
@@ -23,22 +23,32 @@
                       size="175"
                       tile
                     >
-                      <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
+                      <img id="preview" :src="photoSrc" alt="">
                     </v-avatar>
                   </v-col>
                   <v-col
                     align-self="end"
                     cols="12"
-                    md="9"
+                    md="8"
                   >
                     <div>
                       <v-btn
                         color="primary"
                         dark
                         small
-                        min-width="100"> Choose a file
+                        min-width="100"
+                        :loading="isSelecting"
+                        @click="handleFileImport"> {{ photoText }}
                       </v-btn>
-                      <small class="d-block mt-3">Acceptable formats .jpg, .png only <br>Max file size is 500 kb and min size 70 kb.</small>
+                      <input
+                          ref="uploader"
+                          id="profile"
+                          class="d-none"
+                          type="file"
+                          accept="image/png, image/jpeg"
+                          @change="onFileChanged"
+                      >
+                      <small class="d-block mt-3">Acceptable formats .jpg, .png only</small>
                     </div>
                   </v-col>
                 </v-row>
@@ -91,23 +101,6 @@
                       solo
                       @input="[$v.accountData.lastname.$touch(), removeValidation(['lastname'])]"
                       @blur="[$v.accountData.lastname.$touch(), removeValidation(['lastname'])]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" md="3">
-                    <div>Username</div>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      v-model="accountData.username"
-                      :error-messages="('username' in validationErrorList) ? validationErrorList['username'] : usernameErrors"
-                      placeholder="Username"
-                      required
-                      hide-details="auto"
-                      solo
-                      @input="[$v.accountData.username.$touch(), removeValidation(['username'])]"
-                      @blur="[$v.accountData.username.$touch(), removeValidation(['username'])]"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -258,7 +251,6 @@ export default {
       firstname: { required },
       middlename: { required },
       lastname: { required },
-      username: { required },
       email: { required, email },
       phone: { required },
     },
@@ -272,6 +264,9 @@ export default {
   data() {
     return {
       show: false,
+      isSelecting: false,
+      photoText: this.$auth.user.pic?'Change photo':'Choose a file',
+      photoSrc: `${this.$config.laraURL}/accounts/${this.$auth.user.pic?this.$auth.user.pic:'nopreview.png'}`,
       processingAccount: false,
       processingPassword: false,
       sessionData: [],
@@ -279,7 +274,6 @@ export default {
         firstname: '',
         middlename: '',
         lastname: '',
-        username: '',
         email: '',
         phone: '',
       },
@@ -311,12 +305,6 @@ export default {
       const errors = []
       if (!this.$v.accountData.lastname.$dirty) return errors
       !this.$v.accountData.lastname.required && errors.push('Lastname is required')
-      return errors
-    },
-    usernameErrors () {
-      const errors = []
-      if (!this.$v.accountData.username.$dirty) return errors
-      !this.$v.accountData.username.required && errors.push('Username is required')
       return errors
     },
     emailErrors () {
@@ -360,7 +348,6 @@ export default {
       this.accountData.firstname = user.firstname
       this.accountData.middlename = user.middlename
       this.accountData.lastname = user.lastname
-      this.accountData.username = user.username
       this.accountData.email = user.email
       this.accountData.phone = user.phone
     },
@@ -393,6 +380,34 @@ export default {
         delete validation[item]
       })
       this.$store.commit('user/SETVALIDATIONERROR', validation)
+    },
+    handleFileImport() {
+      this.isSelecting = true;
+      window.addEventListener('focus', () => {
+          this.isSelecting = false
+      }, { once: true });
+
+      this.$refs.uploader.click();
+    },
+    async onFileChanged(e) {
+        if(e.target.files.length > 0) {
+          let reader = new FileReader()
+          reader.onload = function (e) {
+            document.getElementById('preview').src = e.target.result
+          }
+          reader.readAsDataURL(e.target.files[0]);
+        }
+
+        const formdata = new FormData()
+        let imageFile = document.getElementById('profile').files
+        if(imageFile.length != 0) {
+          formdata.append('file', document.getElementById('profile').files[0])
+        }
+
+        await this.$store.dispatch(`user/updatePhoto`, {id: this.$auth.user.id, data:formdata}).then(() => {
+            if(!Object.keys(this.validationErrorList).length) {
+            }
+          })
     },
   },
   mounted() {

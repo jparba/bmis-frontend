@@ -1,7 +1,7 @@
 <template>
   <div>
     <navigation />
-    <v-container>
+    <v-container class="mt-5">
       <v-row>
         <v-row>
           <v-col cols="12" md="3">
@@ -28,6 +28,9 @@ export default {
     return {
 
     }
+  },
+  mounted() {
+    this.$auth.user.status == 0 ? this.$router.push('/accountStatus') : ''
   }
 }
 </script>

@@ -25,7 +25,14 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    ],
+    __dangerouslyDisableSanitizers: ['script'],
+        script: [
+          {
+            hid: 'tinymce',
+            src: 'https://cdn.tiny.cloud/1/zkoma8houg37oxgnyzszul0spd5885cta2c87dvjjbto3ja0/tinymce/5/tinymce.min.js',
+          },
+        ]
   },
   /*
   ** Global CSS
@@ -38,6 +45,8 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    { src: '@/plugins/vue-html2pdf', mode: 'client' },
+    { src: '@/plugins/mavon-editor', mode: 'client' }
   ],
   /*
   ** Auto import components
@@ -135,5 +144,9 @@ export default {
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
+  },
+
+  publicRuntimeConfig: {
+    laraURL: 'http://localhost:8000',
   }
 }

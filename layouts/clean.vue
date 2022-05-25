@@ -11,7 +11,7 @@
       class="d-flex justify-center flex-column white--text pa-4"
     >
       <span>Barangay Management System &copy; {{ new Date().getFullYear() }}</span>
-      <span>Develop with ❤️ by Developer1 &amp; Developer2</span>
+      <span>Develop with ❤️ by Girlie &amp; Developer2</span>
     </v-footer>
   </v-app>
 </template>

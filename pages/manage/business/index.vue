@@ -45,76 +45,50 @@
               </v-card-title>
               <v-card-text>
                 <div class="legend-ttl">
-                  <h5>Basic Information</h5>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6" md="6">
                         <v-text-field
-                          label="First_name"
+                          label="Business name"
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Middle name"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Last name"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="3">
+                      <v-col cols="12" sm="6" md="6">
                         <v-select
-                          :items="['Male', 'Female']"
-                          label="Gender"
+                          :items="['Store', 'Bakeshop']"
+                          label="Business type"
                           required
                         ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Birthdate"
-                          required
-                        ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>
                 </div>
                 <div class="legend-ttl">
-                  <h5>Contacts</h5>
                   <v-container>
                     <v-row>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
+                          label="Owner"
+                          required
+                        ></v-text-field>
+                      </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
                           label="Phone number"
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          label="Email"
-                          required
-                        ></v-text-field>
-                      </v-col>
                     </v-row>
                   </v-container>
                 </div>
                 <div class="legend-ttl">
-                  <h5>Address</h5>
                   <v-container>
                     <v-row>
                       <v-col cols="12" sm="6" md="6">
                         <v-autocomplete
                           :items="['Purok 1', 'Purok 2', 'Purok 3', 'Purok 4', 'Purok 5', 'Purok 6']"
-                          label="Purok"
+                          label="Purok location"
                         ></v-autocomplete>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          label="Street"
-                          required
-                        ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>

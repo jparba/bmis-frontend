@@ -46,6 +46,11 @@
                     :loading="processing"
                     min-width="200"
                     @click="submit"> login
+                    <template v-slot:loader>
+                      <span class="custom-loader">
+                        <v-icon dark>mdi-cached</v-icon>
+                      </span>
+                    </template>
                   </v-btn>
     						</v-col>
                 <v-col cols="12">
@@ -113,14 +118,14 @@ import { required, email } from 'vuelidate/lib/validators'
                 password: this.password
               }
             })
-            if(this.$auth.user && this.$auth.user.role == 'admin') {
+            if(this.$auth.user && this.$auth.user.role == 'admin' || this.$auth.user.role == 'secretary') {
               this.$router.push('/manage')
-            }else{
-              this.$router.push('/dashboard')
+            }else if(this.$auth.user && this.$auth.user.role == 'user'){
+              this.$router.push(this.$auth.user.status == 1? '/myAccount' : (this.$auth.user.status == 4? '/reuploadID' : '/accountStatus'))
             }
           }
         }catch(error) {
-          alert('Invalid credentials');
+          this.$toast.global.error('Invalid credentials')
           this.processing = false;
         }
         this.processing = false;

@@ -6,14 +6,22 @@
     <v-navigation-drawer permanent>
       <v-list>
         <v-list-item>
-          <v-list-item-avatar>
-            <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
+          <v-list-item-avatar v-if="$auth.user.pic" size="38" class="mr-2">
+            <img
+              :src="`${$config.laraURL}/accounts/${$auth.user.pic}`"
+              :alt="firstLetter($auth.user.firstname, $auth.user.lastname)"
+            >
+          </v-list-item-avatar>
+          <v-list-item-avatar v-else color="red" size="38" class="mr-2">
+            <span class="white--text">{{ firstLetter($auth.user.firstname, $auth.user.lastname) }}</span>
           </v-list-item-avatar>
         </v-list-item>
 
+
+
         <v-list-item link>
           <v-list-item-content>
-            <v-list-item-title class="text-h6">
+            <v-list-item-title id="fullname" class="text-h6">
               {{ $auth.user.firstname }} {{ $auth.user.lastname }}
             </v-list-item-title>
             <v-list-item-subtitle>{{ $auth.user.email }}</v-list-item-subtitle>
@@ -72,17 +80,20 @@
       selectedItem: 0,
       items: [
         { text: 'My Account', icon: 'mdi-folder', route: '/myAccount' },
-        { text: 'Resident Information', icon: 'mdi-check-circle', route: '/resident' },
+        { text: 'User Information', icon: 'mdi-check-circle', route: '/resident' },
         { text: 'Request', icon: 'mdi-account-multiple', route: '/request' },
-        { text: 'Notification', icon: 'mdi-star', route: '/' },
+        /*{ text: 'Notification', icon: 'mdi-star', route: '/' },
         { text: 'Feedback', icon: 'mdi-history', route: '/' },
-        { text: 'Uploads', icon: 'mdi-upload', route: '/' },
+        { text: 'Uploads', icon: 'mdi-upload', route: '/' },*/
       ],
     }),
     methods: {
       async logout() {
           await this.$auth.logout('laravelSanctum')
           this.$router.push('/login')
+      },
+      firstLetter(fname, lname) {
+        return `${fname.charAt(0).toUpperCase()}${lname.charAt(0).toUpperCase()}`
       }
     }
   }

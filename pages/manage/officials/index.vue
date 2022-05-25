@@ -1,14 +1,14 @@
 <template>
-	<div>
-		<v-container>
+  <div>
+    <v-container>
       <div class="d-flex align-center">
-        <h2 class="mt-2">Resident list</h2>
+        <h2 class="mt-2">Official list</h2>
         <v-btn rounded
           color="primary"
           class="ml-auto"
           nuxt
           link
-          to="resident/new"
+          to="officials/new"
         >
           <v-icon left> mdi-plus </v-icon> Add new
         </v-btn>
@@ -36,18 +36,18 @@
         </v-col>
       </v-row>
       <div v-else>
-        <ul v-if="residentList.length > 0" class="resident-list">
-          <li v-for="(rl, k) in residentList" :key="k" to="/">
-            <nuxt-link :to="`/manage/resident/${rl.id}`">
+        <ul v-if="officialList.length > 0" class="resident-list">
+          <li v-for="(rl, k) in officialList" :key="k" to="/">
+            <nuxt-link :to="`/manage/officials/${rl.id}`">
               <v-card
                   class="mx-auto"
                   max-width="100%"
                   outlined
                 >
                 <div class="d-flex align-center">
-                  <v-avatar v-if="rl.pic && rl.pic != 'null'" size="80">
+                  <v-avatar v-if="rl.photo && rl.photo != 'null'" size="80">
                     <img
-                      :src="`${$config.laraURL}/accounts/${rl.pic}`"
+                      :src="`${$config.laraURL}/officials/${rl.photo}`"
                       :alt="firstLetter(rl.firstname, rl.lastname)"
                     >
                   </v-avatar>
@@ -56,7 +56,7 @@
                   </v-avatar>
                   <div class="ml-2">
                     <div>{{ rl.firstname }} {{ rl.lastname }}</div>
-                    <div>Resident ID : {{ rl.brgy_id }}</div>
+                    <div>Designation : {{ rl.position }}</div>
                   </div>
                 </div>
                 </v-card>
@@ -64,12 +64,12 @@
             </li>
         </ul>
         <div v-else class="d-flex flex-column align-center mt-10">
-          <img src="/_nuxt/assets/img/undraw_web_search_re_efla.svg" alt="" width="500">
+          <img src="~/assets/img/undraw_web_search_re_efla.svg" alt="" width="500">
           <h2>No data found</h2>
         </div>
       </div>
     </v-container>
-	</div>
+  </div>
 </template>
 
 <script>
@@ -78,33 +78,33 @@ import ErrorView from '~/components/ErrorView.vue'
 
   export default {
     middleware: 'access',
-  	layout: 'withMenus',
-  	components: { ErrorView },
-  	data(){
-  		return {
-  		}
-  	},
+    layout: 'withMenus',
+    components: { ErrorView },
+    data(){
+      return {
+      }
+    },
 
     async fetch() {
-      await this.fetchResidentList()
+      await this.fetchOfficialList()
     },
 
     fetchOnServer: false,
 
     computed: {
       ...mapGetters({
-        residentList: 'admin/residentList'
+        officialList: 'admin/officialList'
       })
     },
 
-  	methods: {
-      async fetchResidentList() {
-        await this.$store.dispatch('admin/fetchResidentList')
+    methods: {
+      async fetchOfficialList() {
+        await this.$store.dispatch('admin/fetchOfficialList')
       },
       firstLetter(fname, lname) {
         return `${fname.charAt(0).toUpperCase()}${lname.charAt(0).toUpperCase()}`
       }
-  	},
+    },
   }
 </script>
 

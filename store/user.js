@@ -11,6 +11,7 @@ export const actions = {
 			await this.$api.post(`updateAccount/${payload.id}`, payload.data)
 				.then((res) => {
 					if(res.data.success) {
+						this.$auth.setUser(res.data.user)
 						this.$toast.global.success('Account updated successfully')
 					}else{
 						this.$toast.global.error('Unable to update account')
@@ -39,18 +40,32 @@ export const actions = {
 		}
 	},
 	async saveResident({commit}, payload) {
-		let updateID = payload.update?this.$auth.user.id:''
 		try{
-			await this.$api.post(`resident/${updateID}`, payload.data)
+			await this.$api.post(`resident`, payload)
 				.then((res) => {
-					// this.$toast.global.error(res.data.message)
-					console.log(res)
+					if(res.data.success) {
+						this.$auth.setUser(res.data.user[0])
+						this.$toast.global.success(res.data.message)
+					}else {
+						this.$toast.global.error(res.data.message)
+					}
 				})
 		}catch(error) {
 			const errors = Object.assign({}, error)
 			commit('SETVALIDATIONERROR', errors.response.data.errors)
 		}
-	}
+	},
+	async updatePhoto({commit}, payload) {
+		await this.$api.post(`updatePhoto/${payload.id}`, payload.data)
+			.then(res => {
+				if(res.data.success) {
+					this.$auth.setUser(res.data.user[0])
+					this.$toast.global.success(res.data.message)
+				}else {
+					this.$toast.global.error(res.data.message)
+				}
+			})
+	},
 }
 
 export const mutations = {

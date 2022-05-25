@@ -59,10 +59,13 @@
           <div class="menu_header d-flex align-center">
             <v-icon large color="white" @click="drawer = !drawer">mdi-menu</v-icon>
             <div class="ml-auto d-flex align-center">
-              <v-avatar size="38px" class="mr-2">
-                 <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="user-avatar">
-               </v-avatar>
-              <p class="mb-0">{{ $auth.user.name }}</p>
+              <!-- <v-chip color="green"text-color="white"> -->
+                <v-avatar left color="red mr-2"size="30">
+                  <span class="white--text">AD</span>
+                </v-avatar>
+              <!-- </v-chip> -->
+
+              <p class="mb-0">{{ $auth.user.email }}</p>
             </div>
           </div>
 
@@ -80,24 +83,29 @@ export default {
     drawer: true,
     links: [
         {
-            to     : '/manage/manage',
+            to     : '/manage/dashboard',
             icon   : 'mdi-view-dashboard',
             text   : 'Dashboard',
         },
         {
-            icon     : 'mdi-application',
+            icon     : 'mdi-account-box',
             text     : 'Profiling',
             subLinks : [
+                // {
+                //     to     : '/manage/business',
+                //     icon   : 'mdi-view-dashboard',
+                //     text   : 'Business',
+                // },
                 {
-                    to     : '/manage/business',
-                    icon   : 'mdi-view-dashboard',
-                    text   : 'Business',
+                    to     : '/manage/officials',
+                    icon   : 'mdi-account-cowboy-hat-outline',
+                    text   : 'Officials',
                 },
-                {
+                /*{
                     to     : '/manage/household',
                     icon   : 'mdi-view-dashboard',
                     text   : 'Household',
-                },
+                },*/
             ]
         },
         {
@@ -105,37 +113,47 @@ export default {
             text     : 'Management',
             subLinks : [
                 {
-                    to     : '/manage/vawc',
-                    icon   : 'mdi-view-dashboard',
-                    text   : 'VAWC',
+                    to     : '/manage/user',
+                    icon   : 'mdi-account-outline',
+                    text   : 'User',
                 },
-                {
-                    to     : '/manage/blotter',
-                    icon   : 'mdi-view-list',
-                    text   : 'Blotter',
-                },
+                // {
+                //     to     : '/manage/vawc',
+                //     icon   : 'mdi-view-dashboard',
+                //     text   : 'VAWC',
+                // },
+                // {
+                //     to     : '/manage/blotter',
+                //     icon   : 'mdi-view-list',
+                //     text   : 'Blotter',
+                // },
                 {
                     to     : '/manage/resident',
-                    icon   : 'mdi-view-dashboard',
+                    icon   : 'mdi-account-settings-outline',
                     text   : 'Resident',
                 },
                 {
                     to     : '/manage/request-verification',
-                    icon   : 'mdi-view-dashboard',
+                    icon   : 'mdi-file-sign',
                     text   : 'Request verification',
+                },
+                {
+                    to     : '/manage/events-announcements',
+                    icon   : 'mdi-bullhorn-outline',
+                    text   : 'Events & Announcement',
                 },
             ]
         },
-        {
-            to     : '/manage/events-announcements',
-            icon   : 'mdi-view-dashboard',
-            text   : 'Events & Announcement',
-        },
-        {
+        /*{
+            to     : '/manage/send',
+            icon   : 'mdi-email-fast-outline',
+            text   : 'Send SMS',
+        },*/
+        /*{
             to     : '/manage/complaints-feedbacks',
             icon   : 'mdi-view-dashboard',
             text   : 'Complaints & Feedbacks',
-        },
+        },*/
     ]
   }),
   methods: {

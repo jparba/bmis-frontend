@@ -11,7 +11,7 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="6">
+                <v-col cols="12" md="6" xs="12">
                   <v-text-field
                     v-model="formData.firstname"
                     :error-messages="firstnameErrors"
@@ -23,7 +23,7 @@
                     @blur="$v.formData.firstname.$touch()"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12" md="6" xs="12">
                   <v-text-field
                     v-model="formData.middlename"
                     :error-messages="middlenameErrors"
@@ -35,7 +35,7 @@
                     @blur="$v.formData.middlename.$touch()"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12" md="6" xs="12">
                   <v-text-field
                     v-model="formData.lastname"
                     :error-messages="lastnameErrors"
@@ -47,19 +47,7 @@
                     @blur="$v.formData.lastname.$touch()"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    v-model="formData.username"
-                    :error-messages="usernameErrors"
-                    prepend-icon="mdi-account-outline"
-                    label="Username"
-                    required
-                    hide-details="auto"
-                    @input="$v.formData.username.$touch()"
-                    @blur="$v.formData.username.$touch()"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6">
+                <v-col cols="12" md="6" xs="12">
                   <v-text-field
                     v-model="formData.email"
                     :error-messages="emailErrors"
@@ -71,7 +59,7 @@
                     @blur="$v.formData.email.$touch()"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12" md="6" xs="12">
                   <v-text-field
                       v-model="formData.password"
                       :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -86,7 +74,7 @@
                       @blur="$v.formData.password.$touch()"
                     ></v-text-field>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12" md="6" xs="12">
                   <v-text-field
                     v-model="formData.phone"
                     :error-messages="phoneErrors"
@@ -99,25 +87,44 @@
                     @blur="[$v.formData.phone.$touch()]"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    v-model="formData.gender"
-                    :error-messages="genderErrors"
-                    prepend-icon="mdi-account-outline"
-                    label="Gender"
-                    required
-                    readonly
-                    hide-details="auto"
-                    @input="$v.formData.gender.$touch()"
-                    @blur="$v.formData.gender.$touch()"
-                    @click="genderDialog = true"
-                  ></v-text-field>
+
+                <v-col cols="12">
+                  <div class="d-flex flex-wrap align-center mt-4">
+                    <h4>Please attach your photo <small>(optional)</small></h4>
+                    <v-btn
+                      color="success"
+                      dark
+                      small
+                      min-width="100"
+                      :loading="isSelecting"
+                      class="ml-auto"
+                      @click="handleFileImport"> {{ photoText ? 'Change' : 'Attach' }}
+                    </v-btn>
+
+                    <input
+                        ref="uploader"
+                        id="validID"
+                        class="d-none"
+                        type="file"
+                        accept="image/*"
+                        @change="onFileChanged"
+                    >
+                  </div>
+                  <div class="preview_wrap">
+                    <v-avatar
+                      class="profile"
+                      color="transparent"
+                      size="300"
+                      tile
+                    >
+                      <img id="preview" src="~/assets/img/nopreview.png" alt="">
+                    </v-avatar>
+                  </div>
                 </v-col>
 
                 <v-col cols="12" class="text-center mt-5">
                   <v-btn
                     color="primary"
-                    dark
                     large
                     min-width="200"
                     :loading="processing"
@@ -128,42 +135,6 @@
             </v-container>
           </v-form>
         </v-card>
-
-        <v-dialog
-          v-model="genderDialog"
-          max-width="290"
-          persistent
-        >
-          <v-card>
-            <v-card-title class="text-h5">
-              Select your gender
-            </v-card-title>
-
-            <v-card-text>
-              <v-radio-group v-model="genderChoosen">
-                <v-radio
-                  label="Male"
-                  value="Male"
-                ></v-radio>
-                <v-radio
-                  label="Female"
-                  value="Female"
-                ></v-radio>
-              </v-radio-group>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="green darken-1"
-                text
-                @click="[genderDialog = false, formData.gender = genderChoosen]"
-              >
-                Choose
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </div>
     </div>
   </div>
@@ -172,7 +143,7 @@
 <script>
 import Navigation from '~/components/Navigation.vue'
 import { validationMixin } from 'vuelidate'
-import { required, email, minLength } from 'vuelidate/lib/validators'
+import { required, requiredIf, email, minLength } from 'vuelidate/lib/validators'
 
   export default {
     middleware: 'redirect',
@@ -186,29 +157,32 @@ import { required, email, minLength } from 'vuelidate/lib/validators'
       formData: {
         firstname: { required },
         middlename: { required },
+        idNumber: {
+          required: requiredIf(function(form){
+            return this.showIdInput
+          })
+        },
         lastname: { required },
-        username: { required },
         email: { required, email },
         password: { required, minLength: minLength(8) },
         phone: { required },
-        gender: { required },
       }
     },
 
     data: () => ({
       show: false,
-      genderDialog: false,
       processing: false,
-      genderChoosen: 'Male',
+      isSelecting: false,
+      showIdInput: false,
+      photoText: false,
       formData: {
         firstname: '',
         middlename: '',
+        idNumber: '',
         lastname: '',
-        username: '',
         email: '',
         password: '',
         phone: '',
-        gender: '',
       }
     }),
 
@@ -217,6 +191,12 @@ import { required, email, minLength } from 'vuelidate/lib/validators'
         const errors = []
         if (!this.$v.formData.firstname.$dirty) return errors
         !this.$v.formData.firstname.required && errors.push('Firstname is required')
+        return errors
+      },
+      idNumberErrors () {
+        const errors = []
+        if (!this.$v.formData.idNumber.$dirty) return errors
+        this.showIdInput && !this.$v.formData.idNumber.required && errors.push('Barangay ID number is required')
         return errors
       },
       middlenameErrors () {
@@ -229,12 +209,6 @@ import { required, email, minLength } from 'vuelidate/lib/validators'
         const errors = []
         if (!this.$v.formData.lastname.$dirty) return errors
         !this.$v.formData.lastname.required && errors.push('Lastname is required')
-        return errors
-      },
-      usernameErrors () {
-        const errors = []
-        if (!this.$v.formData.username.$dirty) return errors
-        !this.$v.formData.username.required && errors.push('Username is required')
         return errors
       },
       emailErrors () {
@@ -257,12 +231,6 @@ import { required, email, minLength } from 'vuelidate/lib/validators'
         !this.$v.formData.phone.required && errors.push('Phone No. is required')
         return errors
       },
-      genderErrors () {
-        const errors = []
-        if (!this.$v.formData.gender.$dirty) return errors
-        !this.$v.formData.gender.required && errors.push('Gender is required')
-        return errors
-      },
     },
 
     methods: {
@@ -270,27 +238,80 @@ import { required, email, minLength } from 'vuelidate/lib/validators'
         this.$v.$touch();
         if(!this.$v.$invalid) {
           this.processing = true
+
+          const formdata = new FormData()
+          let imageFile = document.getElementById('validID').files
+
+          formdata.append('firstname', this.formData.firstname)
+          formdata.append('middlename', this.formData.middlename)
+          formdata.append('idNumber', this.formData.idNumber)
+          formdata.append('lastname', this.formData.lastname)
+          formdata.append('email', this.formData.email)
+          formdata.append('password', this.formData.password)
+          formdata.append('phone', this.formData.phone)
+
+          if(imageFile.length != 0) {
+            formdata.append('file', document.getElementById('validID').files[0])
+          }
           await this.$api.get('http://localhost:8000/sanctum/csrf-cookie')
-          await this.$api.post('register', this.formData)
-            .then(res => {
-              if(res.data.success) {
-                this.$auth.loginWith('laravelSanctum', {
-                  data: {
-                    email: this.formData.email,
-                    password: this.formData.password
-                  }
-                })
+          try {
+            await this.$api.post('register', formdata)
+              .then(res => {
+                if(res.data.success) {
+                  this.$auth.loginWith('laravelSanctum', {
+                    data: {
+                      email: this.formData.email,
+                      password: this.formData.password
+                    }
+                  })
+                }else{
+                  this.$toast.global.error('Error encountered')
+                }
+            })
+            this.$router.push('/accountStatus')
+          } catch (error) {
+              const errors = Object.assign({}, error)
+              if(errors.response.data.errors.email) {
+                this.$toast.global.error('Email already exist')
               }
-          })
+          }
 
           this.processing = false
-          this.$router.push('/')
         }
+      },
+      radioChange(e) {
+        this.showIdInput = e == 1? true : false
+      },
+      handleFileImport() {
+        this.isSelecting = true;
+        window.addEventListener('focus', () => {
+            this.isSelecting = false
+        }, { once: true });
+
+        this.$refs.uploader.click();
+      },
+      async onFileChanged(e) {
+          if(e.target.files.length > 0) {
+            // this.photoText = true
+            let reader = new FileReader()
+            reader.onload = function (e) {
+              document.getElementById('preview').src = e.target.result
+            }
+            reader.readAsDataURL(e.target.files[0]);
+          }
       },
     },
   }
 </script>
 
 <style lang="scss">
-
+  .preview_wrap{
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #333;
+    margin-top: 20px;
+    min-height: 300px;
+  }
 </style>
